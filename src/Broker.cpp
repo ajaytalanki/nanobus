@@ -105,6 +105,7 @@ void Broker::handleRead(int fd) {
         return;
     }
     auto& conn = connIt->second;
+    bool shouldDisconnect = false;
 
     uint8_t buffer[4096];
     while (true) {
@@ -112,14 +113,17 @@ void Broker::handleRead(int fd) {
         if (bytesRead > 0) {
             conn->readBuf.insert(conn->readBuf.end(), buffer, buffer + bytesRead);
         } else if (bytesRead == 0 || (bytesRead < 0 && errno != EAGAIN && errno != EWOULDBLOCK)) {
-            disconnectClient(fd);
-            return;
+            shouldDisconnect = true;
+            break;
         } else {
             break;
         }
     }
 
     processFrames(*conn);
+    if (shouldDisconnect && connections_.contains(fd)) {
+        disconnectClient(fd);
+    }
 }
 
 void Broker::processFrames(Connection& conn) {
