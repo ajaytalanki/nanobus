@@ -42,7 +42,7 @@ void Router::removeClient(int fd) {
 std::vector<int> Router::getMatchedSubscribers(const std::string& topic) const {
     std::vector<int> matchedFds;
     for (const auto& [prefix, clients] : subscriptions_) {
-        if (topic.rfind(prefix, 0) == 0) {
+        if (topic == prefix) {
             for (int fd : clients) {
                 matchedFds.push_back(fd);
             }

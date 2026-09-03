@@ -41,6 +41,16 @@ Run the sample publisher/subscriber test:
 ./build/test_app
 ```
 
+## Test
+
+Run the unit tests from the build directory so CTest stores its `Testing/` data under `build/`. This form works with older CTest versions too:
+
+```bash
+cd build
+ctest --output-on-failure
+cd ..
+```
+
 ## Wire protocol
 
 Each frame is encoded as:
