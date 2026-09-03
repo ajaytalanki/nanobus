@@ -1,24 +1,15 @@
-add_executable(router_unit_tests
-    RouterTest.cpp
-)
-
-target_link_libraries(router_unit_tests
-    PRIVATE
-        nanobus_core
-        GTest::gtest_main
-)
-
 include(GoogleTest)
-gtest_discover_tests(router_unit_tests)
 
-add_executable(connection_unit_tests
-    ConnectionTest.cpp
-)
+function(add_nanobus_test target source)
+    add_executable(${target} ${source})
+    target_link_libraries(${target}
+        PRIVATE
+            nanobus_core
+            GTest::gtest_main
+    )
+    gtest_discover_tests(${target})
+endfunction()
 
-target_link_libraries(connection_unit_tests
-    PRIVATE
-        nanobus_core
-        GTest::gtest_main
-)
-
-gtest_discover_tests(connection_unit_tests)
+add_nanobus_test(router_unit_tests RouterTest.cpp)
+add_nanobus_test(connection_unit_tests ConnectionTest.cpp)
+add_nanobus_test(broker_integration_tests BrokerIntegrationTest.cpp)

@@ -35,6 +35,6 @@ add_subdirectory(test)
 
 add_custom_target(gtest
     COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure
-    DEPENDS router_unit_tests connection_unit_tests
+    DEPENDS router_unit_tests connection_unit_tests broker_integration_tests
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
 )

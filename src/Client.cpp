@@ -117,6 +117,7 @@ void Subscriber::listen(std::function<void(const std::string&, const std::string
 void Subscriber::stop() {
     running_ = false;
     if (socketFd_ >= 0) {
+        shutdown(socketFd_, SHUT_RDWR);
         close(socketFd_);
         socketFd_ = -1;
     }
