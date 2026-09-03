@@ -33,7 +33,7 @@ target_link_libraries(nanobus PRIVATE nanobus_core)
 
 add_subdirectory(test)
 
-add_custom_target(test
+add_custom_target(gtest
     COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure
     DEPENDS router_unit_tests connection_unit_tests
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}

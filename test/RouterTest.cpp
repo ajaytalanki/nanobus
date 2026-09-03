@@ -24,6 +24,14 @@ TEST(RouterTest, DoesNotMatchSimilarTopicNames) {
     EXPECT_EQ(router.getMatchedSubscribers("market"), (std::vector<int>{7}));
 }
 
+TEST(RouterTest, EmptyTopicMatchesOnlyEmptyTopic) {
+    nanobus::Router router;
+    router.subscribe(7, "");
+
+    EXPECT_EQ(router.getMatchedSubscribers(""), (std::vector<int>{7}));
+    EXPECT_TRUE(router.getMatchedSubscribers("market").empty());
+}
+
 TEST(RouterTest, OneClientCanSubscribeToMultipleTopics) {
     nanobus::Router router;
     router.subscribe(42, "market/crypto/eth");
@@ -52,6 +60,16 @@ TEST(RouterTest, UnsubscribeRemovesOnlyRequestedTopic) {
     EXPECT_EQ(router.getMatchedSubscribers("market/stocks/aapl"), (std::vector<int>{5}));
 }
 
+TEST(RouterTest, UnsubscribeOfMissingTopicIsSafe) {
+    nanobus::Router router;
+    router.subscribe(5, "market");
+
+    router.unsubscribe(5, "orders");
+    router.unsubscribe(99, "market");
+
+    EXPECT_EQ(router.getMatchedSubscribers("market"), (std::vector<int>{5}));
+}
+
 TEST(RouterTest, RemoveClientCleansAllSubscriptions) {
     nanobus::Router router;
     router.subscribe(11, "market/crypto/btc");
@@ -62,6 +80,15 @@ TEST(RouterTest, RemoveClientCleansAllSubscriptions) {
 
     EXPECT_EQ(router.getMatchedSubscribers("market/crypto/btc"), (std::vector<int>{12}));
     EXPECT_TRUE(router.getMatchedSubscribers("orders").empty());
+}
+
+TEST(RouterTest, RemovingUnknownClientIsSafe) {
+    nanobus::Router router;
+    router.subscribe(11, "market");
+
+    router.removeClient(99);
+
+    EXPECT_EQ(router.getMatchedSubscribers("market"), (std::vector<int>{11}));
 }
 
 TEST(RouterTest, ResultsAreSorted) {
